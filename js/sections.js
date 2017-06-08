@@ -4,136 +4,73 @@
 /* 此代码支持IE9+以及其他浏览器，
  * 使用了dom2级的特性，由于IE8
  * 以及以下版本（未完全支持dom2）
- * 未实现audio,video所以不用考虑*/
+ * 未实现audio,video所以不用考虑
+ */
+
 window.onload = function () {
     function addPlayerEvents(element) {
         "use strict";
+
         //传入单个元素
+        console.log(element);
         if (element.nodeType === 1) {
             addEvents(element);
-        } else {
+        } else if (element.length >= 1){
+
             //传入nodeList
-            for (var i = 0, len = element.length; i < len; i++) {
+            var i = 0,
+                len = element.length;
+
+            for (; i < len; i++) {
                 addEvents(element[i]);
             }
+        } else {
+            throw new Error("Wrong arguments!");
         }
 
         function addEvents(element) {
+
             //getElementsByClassName ie9+可以使用
             var pauseBtn = element.getElementsByClassName("pause-btn")[0],
                 timeLine = element.getElementsByClassName("time-line")[0],
                 timeLineDuration = timeLine.children[0],
-                timeLineBtn = element.getElementsByClassName("time-line-btn")[0],
+                timeLineBtn =
+                    element.getElementsByClassName("time-line-btn")[0],
                 controls = element.getElementsByClassName("controls")[0],
                 timeNow = element.getElementsByClassName("time-text-now")[0],
                 timeFull = element.getElementsByClassName("time-text-full")[0],
                 playerPlaying = false,
+
                 //ie9+支持getComputedStyle
                 getComputedStyle = document.defaultView.getComputedStyle,
                 durationPercent = 0,
-                allTime,
+                allTime = 0,
                 offsetLeft = 0,
                 currentElement = timeLineBtn.offsetParent;
 
-
-            //初始化
-            timeLineDuration.style.width = "0";
-            pauseBtn.style.left = "0";
-
-            do {
-                offsetLeft += currentElement.offsetLeft;
-                currentElement = currentElement.offsetParent;
-            } while (currentElement);
-
-
-            //增加对pauseBtn的相应事件
-            //监听对pause按钮的点击操作,ie9+支持addEventListener
-            //addEventListener ie9+可以使用
-            pauseBtn.addEventListener("click", function () {
-                if (playerPlaying === true) {
-                    btnPauseHandler();
-                    controls.pause();
-                } else {
-                    btnPlayHandler();
-                    controls.play();
-                }
-            });
-
-
-            //增加对timeLineBtn的相应事件
-            //鼠标移出pauseBtn改变对mousemove事件的监听状态
-            //removeEventListener ie9+可以使用
-            timeLineBtn.addEventListener("mousedown", function () {
-                window.addEventListener("mousemove", mouseMoveHandler);
-                timeLineBtn.className = "time-line-btn" + " " + "time-line-btn-focus";
-            });
-
-            //监听click事件，解决使用触摸板操作的问题
-            window.addEventListener("click", function () {
-                window.removeEventListener("mousemove", mouseMoveHandler);
-            });
-
-            //改变播放器的播放时间
-            function mouseMoveHandler(event) {
-                timeLineBtn.style.left = parseInt(event.pageX - offsetLeft);
-                controls.currentTime = String(getCurrentTime(event));
-            }
-
-            function getCurrentTime(event) {
-                var width = parseInt(event.pageX - offsetLeft),
-                    allWidth = parseInt(getComputedStyle(timeLine, null).width);
+            function getCurrentTime(pageX) {
+                var width = parseInt(pageX - offsetLeft),
+                    allWidth = parseInt(getComputedStyle(timeLine,
+                        null).width);
                 durationPercent = width / allWidth;
                 return parseInt(durationPercent * allTime);
             }
 
-            //增加对timeLine的事件
-            timeLine.addEventListener("click", function () {
-                controls.currentTime = String(getCurrentTime(event));
-            });
-            //使得鼠标放在上面时显示时间
-            timeLine.addEventListener("mousemove", function (event) {
-                var time = getCurrentTime(event);
-                timeLine.title = getFormatTime(time);
-            });
-
-
-            //增加对播放器数据更新的相应事件
-            //监听是否播放结束，并对其做相应处理
-            controls.addEventListener("ended", btnPauseHandler);
-
-            controls.addEventListener("pause", btnPauseHandler);
-
-            function btnPauseHandler() {
+            function playerPause() {
                 pauseBtn.className = "pause-btn" + " " + "pause-btn-pause";
-                timeLineBtn.className = "time-line-btn" + " " + "time-line-btn-ini";
+                timeLineBtn.className = "time-line-btn" + " " +
+                    "time-line-btn-ini";
                 playerPlaying = false;
+                controls.pause();
             }
 
-            controls.addEventListener("play", btnPlayHandler);
-
-            function btnPlayHandler() {
+            function playerPlay() {
                 pauseBtn.className = "pause-btn" + " " + "pause-btn-play";
-                timeLineBtn.className = "time-line-btn" + " " + "time-line-btn-focus";
+                timeLineBtn.className = "time-line-btn" + " " +
+                    "time-line-btn-focus";
                 playerPlaying = true;
+                controls.play();
             }
-
-            controls.addEventListener("loadedmetadata", function () {
-                allTime = controls.duration;
-                timeNow.innerHTML = getFormatTime(controls.currentTime);
-                timeFull.innerHTML = getFormatTime(controls.duration);
-            });
-
-            controls.addEventListener("timeupdate", function () {
-                //防止初始化更新播放时长失败
-                allTime = controls.duration;
-                var percent = controls.currentTime / allTime;
-                timeLineBtn.style.left = parseInt(percent *
-                        parseInt(getComputedStyle(timeLine, null).width)) + "px";
-                timeLineDuration.style.width = parseInt(percent *
-                        parseInt(getComputedStyle(timeLine, null).width)) + "px";
-                timeNow.innerHTML = getFormatTime(controls.currentTime);
-                timeFull.innerHTML = getFormatTime(controls.duration);
-            });
 
             //转换时间成标准格式
             function getFormatTime(time) {
@@ -153,6 +90,98 @@ window.onload = function () {
                     return time;
                 }
             }
+
+            //改变播放器的播放时间
+            function changePlayerTime(pageX) {
+                timeLineBtn.style.left = parseInt(pageX - offsetLeft);
+                controls.currentTime = String(getCurrentTime(pageX));
+            }
+
+            //处理pauseBtn的点击事件
+
+
+            function handleMousemove(event) {
+                var pageX = event.pageX;
+                changePlayerTime(pageX);
+            }
+
+            function handleTimeLineBtnMousemove() {
+                window.addEventListener("mousemove", handleMousemove);
+                timeLineBtn.className = "time-line-btn" + " " +
+                    "time-line-btn-focus";
+            }
+
+            function showTime(event) {
+                timeLine.title = getFormatTime(getCurrentTime(event.pageX));
+            }
+
+            function updateTimeMeta() {
+                allTime = controls.duration;
+                timeNow.innerHTML = getFormatTime(controls.currentTime);
+                timeFull.innerHTML = getFormatTime(controls.duration);
+            }
+
+            function updateTime() {
+                //防止初始化更新播放时长失败
+                allTime = controls.duration;
+                var percent = controls.currentTime / allTime;
+                timeLineBtn.style.left = parseInt(percent *
+                        parseInt(getComputedStyle(timeLine, null).width)) +
+                    "px";
+                timeLineDuration.style.width = parseInt(percent *
+                        parseInt(getComputedStyle(timeLine, null).width)) +
+                    "px";
+                timeNow.innerHTML = getFormatTime(controls.currentTime);
+                timeFull.innerHTML = getFormatTime(controls.duration);
+            }
+
+            //初始化
+            timeLineDuration.style.width = "0";
+            pauseBtn.style.left = "0";
+
+            do {
+                offsetLeft += currentElement.offsetLeft;
+                currentElement = currentElement.offsetParent;
+            } while (currentElement);
+
+            //增加对pauseBtn的相应事件
+            //监听对pause按钮的点击操作,ie9+支持addEventListener
+            //addEventListener ie9+可以使用
+            pauseBtn.addEventListener("click", function () {
+                if (playerPlaying === true) {
+                    playerPause();
+                } else {
+                    playerPlay();
+                }
+            });
+
+            //增加对timeLineBtn的相应事件
+            //removeEventListener ie9+可以使用
+            timeLineBtn.addEventListener("mousedown",
+                handleTimeLineBtnMousemove);
+
+            //监听click事件，解决使用触摸板操作的问题
+            window.addEventListener("click", function () {
+                window.removeEventListener("mousemove", handleMousemove);
+            });
+
+            //增加对timeLine的事件
+            timeLine.addEventListener("click", handleMousemove);
+
+            //使得鼠标放在上面时显示时间
+            timeLine.addEventListener("mousemove", showTime);
+
+            //增加对播放器数据更新的相应事件
+            //监听是否播放结束，并对其做相应处理
+            controls.addEventListener("ended", playerPause);
+
+            controls.addEventListener("pause", playerPause);
+
+            controls.addEventListener("play", playerPlay);
+
+            controls.addEventListener("loadedmetadata", updateTimeMeta);
+
+            controls.addEventListener("timeupdate", updateTime);
         }
     }
 
