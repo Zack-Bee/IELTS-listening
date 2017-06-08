@@ -321,12 +321,12 @@
 
 
 
-.time-line-btn-ini{
-    background-image: url("../img/time-line-btn-ini.png")
+.time-line-btn-stop{
+    background-image: url("../img/time-line-btn-stop.png")
 }
 
-.time-line-btn-focus{
-    background-image: url("../img/time-line-btn-focus.png");
+.time-line-btn-move{
+    background-image: url("../img/time-line-btn-move.png");
 }
 
 .time-text-group{

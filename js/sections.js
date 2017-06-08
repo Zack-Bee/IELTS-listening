@@ -8,11 +8,10 @@
  */
 
 window.onload = function () {
-    function addPlayerEvents(element) {
+    function addPlayerEvents(element, config) {
         "use strict";
 
         //传入单个元素
-        console.log(element);
         if (element.nodeType === 1) {
             addEvents(element);
         } else if (element.length >= 1){
@@ -31,14 +30,15 @@ window.onload = function () {
         function addEvents(element) {
 
             //getElementsByClassName ie9+可以使用
-            var pauseBtn = element.getElementsByClassName("pause-btn")[0],
-                timeLine = element.getElementsByClassName("time-line")[0],
+            var pauseBtn =
+                    element.getElementsByClassName(config.pauseBtn)[0],
+                timeLine = element.getElementsByClassName(config.timeLine)[0],
                 timeLineDuration = timeLine.children[0],
                 timeLineBtn =
-                    element.getElementsByClassName("time-line-btn")[0],
-                controls = element.getElementsByClassName("controls")[0],
-                timeNow = element.getElementsByClassName("time-text-now")[0],
-                timeFull = element.getElementsByClassName("time-text-full")[0],
+                    element.getElementsByClassName(config.timeLineBtn)[0],
+                controls = element.getElementsByClassName(config.controls)[0],
+                timeNow = element.getElementsByClassName(config.timeNow)[0],
+                timeFull = element.getElementsByClassName(config.timeFull)[0],
                 playerPlaying = false,
 
                 //ie9+支持getComputedStyle
@@ -57,17 +57,15 @@ window.onload = function () {
             }
 
             function playerPause() {
-                pauseBtn.className = "pause-btn" + " " + "pause-btn-pause";
-                timeLineBtn.className = "time-line-btn" + " " +
-                    "time-line-btn-ini";
+                pauseBtn.className = config.pauseBtnPause;
+                timeLineBtn.className = config.timeLineBtnStop;
                 playerPlaying = false;
                 controls.pause();
             }
 
             function playerPlay() {
-                pauseBtn.className = "pause-btn" + " " + "pause-btn-play";
-                timeLineBtn.className = "time-line-btn" + " " +
-                    "time-line-btn-focus";
+                pauseBtn.className = config.pauseBtnPlay;
+                timeLineBtn.className = config.timeLineBtnMove;
                 playerPlaying = true;
                 controls.play();
             }
@@ -107,8 +105,7 @@ window.onload = function () {
 
             function handleTimeLineBtnMousemove() {
                 window.addEventListener("mousemove", handleMousemove);
-                timeLineBtn.className = "time-line-btn" + " " +
-                    "time-line-btn-focus";
+                timeLineBtn.className = config.timeLineBtnMove;
             }
 
             function showTime(event) {
@@ -185,8 +182,21 @@ window.onload = function () {
         }
     }
 
-    var players = document.getElementsByClassName("audioPlayer");
-    addPlayerEvents(players);
+    var players = document.getElementsByClassName("audioPlayer"),
+        config = {
+            pauseBtn: "pause-btn",
+            timeLine: "time-line",
+            timeLineBtn: "time-line-btn",
+            controls: "controls",
+            timeNow: "time-text-now",
+            timeFull: "time-text-full",
+            pauseBtnPlay: "pause-btn pause-btn-play",
+            pauseBtnPause: "pause-btn pause-btn-pause",
+            timeLineBtnStop: "time-line-btn time-line-btn-stop",
+            timeLineBtnMove: "time-line-btn time-line-btn-move"
+        };
+
+    addPlayerEvents(players, config);
 };
 
 
