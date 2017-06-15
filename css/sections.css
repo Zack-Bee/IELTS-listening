@@ -3,6 +3,8 @@
     width: 100%;
     opacity: 0.8;
     background-color: #2ea7e0;
+    position: relative;
+    z-index: 1;
 }
 
 .section-header-back {
@@ -115,27 +117,27 @@
 }
 
 #nav-list {
-    background-image: url("../img/category-ini.png")
+    background-image: url("../img/common/category-ini.png")
 }
 
 #nav-list:hover {
-    background-image: url("../img/category-hvr.png")
+    background-image: url("../img/common/category-hvr.png")
 }
 
 #nav-edit {
-    background-image: url("../img/edit-ini.png");
+    background-image: url("../img/common/edit-ini.png");
 }
 
 #nav-edit:hover {
-    background-image: url("../img/edit-hvr.png")
+    background-image: url("../img/common/edit-hvr.png")
 }
 
 #nav-up {
-    background-image: url("../img/up-ini.png");
+    background-image: url("../img/common/up-ini.png");
 }
 
 #nav-up:hover {
-    background-image: url("../img/up-hvr.png");
+    background-image: url("../img/common/up-hvr.png");
 }
 
 
@@ -275,11 +277,11 @@
 }
 
 .pause-btn-pause{
-    background-image: url("../img/pause-btn-pause.png");
+    background-image: url("../img/common/pause-btn-pause.png");
 }
 
 .pause-btn-play{
-    background-image: url("../img/pause-btn-play.png");
+    background-image: url("../img/common/pause-btn-play.png");
 }
 
 .time-line-group{
@@ -322,11 +324,11 @@
 
 
 .time-line-btn-stop{
-    background-image: url("../img/time-line-btn-stop.png")
+    background-image: url("../img/common/time-line-btn-stop.png")
 }
 
 .time-line-btn-move{
-    background-image: url("../img/time-line-btn-move.png");
+    background-image: url("../img/common/time-line-btn-move.png");
 }
 
 .time-text-group{
