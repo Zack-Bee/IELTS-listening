@@ -102,13 +102,13 @@ try {
                 //处理pauseBtn的点击事件
 
 
-                function Mousemove(event) {
+                function mousemove(event) {
                     var pageX = event.pageX;
                     changePlayerTime(pageX);
                 }
 
-                function TimeLineBtnMousemove() {
-                    window.addEventListener("mousemove", Mousemove);
+                function timeLineBtnMousemove() {
+                    window.addEventListener("mousemove", mousemove);
                     timeLineBtn.className = config.timeLineBtnMove;
                 }
 
@@ -159,15 +159,15 @@ try {
                 //增加对timeLineBtn的相应事件
                 //removeEventListener ie9+可以使用
                 timeLineBtn.addEventListener("mousedown",
-                    TimeLineBtnMousemove);
+                    timeLineBtnMousemove);
 
                 //监听click事件，解决使用触摸板操作的问题
                 window.addEventListener("click", function () {
-                    window.removeEventListener("mousemove", Mousemove);
+                    window.removeEventListener("mousemove", mousemove);
                 });
 
                 //增加对timeLine的事件
-                timeLine.addEventListener("click", Mousemove);
+                timeLine.addEventListener("click", mousemove);
 
                 //使得鼠标放在上面时显示时间
                 timeLine.addEventListener("mousemove", showTime);
