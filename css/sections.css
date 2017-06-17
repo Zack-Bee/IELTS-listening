@@ -227,7 +227,7 @@
 }
 
 .section-ans-table{
-    visibility: hidden;
+    opacity: 0;
     border: 1px;
     color: #2ea7e0;
     box-shadow: 3px 3px 3px #ccc;
@@ -235,11 +235,11 @@
 }
 
 .section-ans-table-hidden{
-    visibility: hidden;
+    opacity: 0;
 }
 
 .section-ans-table-show{
-    visibility: visible;
+    opacity: 1;
 }
 
 .section-ans-table td, .section-ans-table th{
